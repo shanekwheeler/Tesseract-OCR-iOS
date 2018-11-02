@@ -43,6 +43,30 @@
     return self;
 }
 
+- (id) initWithLanguage:(NSString *)language
+  cachesRelatedDataPath:(NSString *)cachesRelatedDataPath
+{
+    self = [super init];
+    if (self != nil) {
+        _tesseract = [[G8Tesseract alloc] initWithLanguage:language configDictionary:nil configFileNames:nil absoluteDataPath:cachesRelatedDataPath engineMode:G8OCREngineModeTesseractOnly];
+        _tesseract.delegate = self;
+        
+        __weak __typeof(self) weakSelf = self;
+        self.completionBlock = ^{
+            __strong __typeof(weakSelf) strongSelf = weakSelf;
+            
+            G8RecognitionOperationCallback callback = [strongSelf.recognitionCompleteBlock copy];
+            G8Tesseract *tesseract = strongSelf.tesseract;
+            if (callback != nil) {
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    callback(tesseract);
+                }];
+            }
+        };
+    }
+    return self;
+}
+
 - (void)main
 {
     @autoreleasepool {

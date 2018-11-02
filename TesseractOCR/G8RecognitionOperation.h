@@ -72,4 +72,7 @@ typedef void(^G8RecognitionOperationCallback)(G8Tesseract *tesseract);
  */
 - (id)initWithLanguage:(NSString*)language;
 
+- (id) initWithLanguage:(NSString *)language
+  cachesRelatedDataPath:(NSString *)cachesRelatedDataPath;
+
 @end
